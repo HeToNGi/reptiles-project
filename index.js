@@ -48,6 +48,21 @@ async function getWeather(){
         temperature: tableData[2][i],
         icon: tableData[1][i],
       }
+    });
+    const futureWeather = await page.$$eval('#dayList .day', divs => {
+      return divs.map(d => {
+        const icon = d.querySelector('.dayicon > img').src;
+        const weather = d.querySelector('.day-item:nth-child(3)').textContent.trim();
+        const day = d.querySelector('.day-item:nth-child(1)').textContent.trim();
+        const high = d.querySelector('.high').textContent.trim();
+        const low = d.querySelector('.low').textContent.trim();
+        return {
+          icon,
+          weather,
+          day,
+          temperature: [low, high]
+        }
+      })
     })
     const data = {
       id: 1,
@@ -57,18 +72,24 @@ async function getWeather(){
       precipitation, // 降水量
       wind, // 风向
       hour_weathers: JSON.stringify(hour_weather),
+      icon: futureWeather[0] ? futureWeather[0].icon : '',
+      weather: futureWeather[0] ? futureWeather[0].weather : '',
+      future_weather: JSON.stringify(futureWeather || []),
     };
     const query = `
-      INSERT INTO weather_data (id, temperature, pressure, humidity, precipitation, wind, hour_weathers)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO weather_data (id, temperature, pressure, humidity, precipitation, wind, hour_weathers, icon, weather, future_weather)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE 
         temperature = VALUES(temperature),
         pressure = VALUES(pressure),
         humidity = VALUES(humidity),
         precipitation = VALUES(precipitation),
         wind = VALUES(wind),
-        hour_weathers = VALUES(hour_weathers)`;
-    db.query(query, [1, data.temperature, data.pressure, data.humidity, data.precipitation, data.wind, data.hour_weathers], (result) => {
+        hour_weathers = VALUES(hour_weathers),
+        icon = VALUES(icon),
+        weather = VALUES(weather),
+        future_weather = VALUES(future_weather)`;
+    db.query(query, [1, data.temperature, data.pressure, data.humidity, data.precipitation, data.wind, data.hour_weathers, data.icon, data.weather, data.future_weather], (result) => {
       console.log('查询了一次天气，当前时间：', new Date());
     });
   }
@@ -83,7 +104,6 @@ async function getNews(){
   async function recursiveCallCreatePage() {
     const page = await browser.newPage();
     await page.goto('https://news.ifeng.com/',  { timeout: 120000 });
-    console.log('打开了news')
     const news_one = await page.$$eval('.news_item > a', elements => {
       const imgs = elements.map(ele => {
         return ele.querySelector('img').src;
@@ -114,7 +134,6 @@ async function obtainStockPrice(){
   async function recursiveCallCreatePage() {
     const page = await browser.newPage();
     await page.goto('https://gushitong.baidu.com',  { timeout: 120000 });
-    console.log('打开了gushitong')
     await page.waitForSelector('.hot-stock-item');
     const stockPrice = await page.$$eval('.page-module .hot-stock-item', elements => {
       return elements.map(e => {
@@ -142,6 +161,7 @@ async function obtainStockPrice(){
   // 其他测试逻辑
   await browser.close();
 };
+
 let job_weather = schedule.scheduleJob('0 * * * *', () => {
   // 获取天气数据，每小时执行一次
   console.log('获取一次天气');

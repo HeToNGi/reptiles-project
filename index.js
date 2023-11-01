@@ -90,14 +90,13 @@ async function getWeather(){
         weather = VALUES(weather),
         future_weather = VALUES(future_weather)`;
     db.query(query, [1, data.temperature, data.pressure, data.humidity, data.precipitation, data.wind, data.hour_weathers, data.icon, data.weather, data.future_weather], (result) => {
-      console.log('查询了一次天气，当前时间：', new Date());
+      console.log('查询了一次天气，当前时间：', new Date(), JSON.stringify(data));
     });
   }
   await recursiveCallCreatePage();
   // 其他测试逻辑
   await browser.close();
 };
-
 // 获取新闻，每天早上九点更新
 async function getNews(){
   const browser = await puppeteer.launch(launchParameters);
@@ -151,7 +150,7 @@ async function obtainStockPrice(){
       db.query('DELETE FROM stock_info', '', (result) => {
         const query = 'INSERT INTO stock_info (name, price, increase) VALUES ?'
         db.query(query, [stockPrice], (result) => {
-          console.log('查询了一次股票信息，当前时间：', new Date());
+          console.log('查询了一次股票信息，当前时间：', new Date(), JSON.stringify(stockPrice));
         });
       });
       
@@ -161,20 +160,19 @@ async function obtainStockPrice(){
   // 其他测试逻辑
   await browser.close();
 };
-
-let job_weather = schedule.scheduleJob('0 * * * *', () => {
-  // 获取天气数据，每小时执行一次
-  console.log('获取一次天气');
+let job_weather = schedule.scheduleJob('*/30 * * * *', () => {
+  // 获取股票信息，每半小时执行一次
+  // console.log('获取一次天气');
   getWeather();
 });
 let job_News = schedule.scheduleJob('0 9 * * *', () => {
   // 获取新闻数据，每天早上九点执行一次
-  console.log('获取一次新闻')
+  // console.log('获取一次新闻')
   getNews();
 });
-let job_stockPrice = schedule.scheduleJob('0 * * * *', () => {
-  // 获取股票信息，每小时执行一次
-  console.log('获取一次股票信息')
+let job_stockPrice = schedule.scheduleJob('*/30 * * * *', () => {
+  // 获取股票信息，每半小时执行一次
+  // console.log('获取一次股票信息')
   obtainStockPrice();
 });
 

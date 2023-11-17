@@ -97,35 +97,35 @@ async function getWeather(){
   // 其他测试逻辑
   await browser.close();
 };
-// 获取新闻，每天早上九点更新
-async function getNews(){
-  const browser = await puppeteer.launch(launchParameters);
-  async function recursiveCallCreatePage() {
-    const page = await browser.newPage();
-    await page.goto('https://news.ifeng.com/',  { timeout: 120000 });
-    const news_one = await page.$$eval('.news_item > a', elements => {
-      const imgs = elements.map(ele => {
-        return ele.querySelector('img').src;
-      })
-      return elements.map((e, i) => ({title: e.title, href: e.href, img: imgs[i]}));
-    });
-    const news_two = await page.$$eval('.news_list a', elements => {
-      return elements.map(ele => ({title: ele.title, href: ele.href, img: ''}));
-    });
-    const news = [...news_one, ...news_two].map(n => {
-      return [n.title, n.href, n.img]
-    })
-    db.query('DELETE FROM news', '', (result) => {
-      const query = 'INSERT INTO news (title, href, img) VALUES ?'
-      db.query(query, [news], (result) => {
-        console.log('查询了一次新闻，当前时间：', new Date());
-      });
-    })
-  }
-  await recursiveCallCreatePage();
-  // 其他测试逻辑
-  await browser.close();
-};
+// // 获取新闻，每天早上九点更新
+// async function getNews(){
+//   const browser = await puppeteer.launch(launchParameters);
+//   async function recursiveCallCreatePage() {
+//     const page = await browser.newPage();
+//     await page.goto('https://news.ifeng.com/',  { timeout: 120000 });
+//     const news_one = await page.$$eval('.news_item > a', elements => {
+//       const imgs = elements.map(ele => {
+//         return ele.querySelector('img').src;
+//       })
+//       return elements.map((e, i) => ({title: e.title, href: e.href, img: imgs[i]}));
+//     });
+//     const news_two = await page.$$eval('.news_list a', elements => {
+//       return elements.map(ele => ({title: ele.title, href: ele.href, img: ''}));
+//     });
+//     const news = [...news_one, ...news_two].map(n => {
+//       return [n.title, n.href, n.img]
+//     })
+//     db.query('DELETE FROM news', '', (result) => {
+//       const query = 'INSERT INTO news (title, href, img) VALUES ?'
+//       db.query(query, [news], (result) => {
+//         console.log('查询了一次新闻，当前时间：', new Date());
+//       });
+//     })
+//   }
+//   await recursiveCallCreatePage();
+//   // 其他测试逻辑
+//   await browser.close();
+// };
 
 // 获取股价，每隔一小时更新
 async function obtainStockPrice(){
@@ -160,6 +160,56 @@ async function obtainStockPrice(){
   // 其他测试逻辑
   await browser.close();
 };
+
+async function getNews() {
+const browser = await puppeteer.launch(launchParameters);
+  async function recursiveCallCreatePage() {
+    const page = await browser.newPage();
+    await page.goto('https://news.cctv.com/',  { timeout: 120000 });
+    const news_one = await page.$$eval('#slide .silde', elements => {
+      const title_href = elements.map(ele => {
+        const a = ele.querySelector('h3 > a')
+        let img = ele.querySelector('img').getAttribute('data-src')
+        if (!img) {
+          img = ele.querySelector('img').src;
+        } else {
+          img = 'https:' + img;
+        }
+        return {title: a.textContent, href: a.href, img,};
+      })
+      return title_href;
+    });
+    const news_two = await page.$$eval('#newslist li', elements => {
+      const title_href = elements.map(ele => {
+        const a = ele.querySelector('.title > a')
+        let img = ele.querySelector('img').getAttribute('data-echo')
+        if (!img) {
+          img = ele.querySelector('img').src;
+        }
+        return {title: a.textContent, href: a.href, img,};
+      })
+      return title_href;
+    });
+
+    // const news_two = await page.$$eval('.news_list a', elements => {
+    //   return elements.map(ele => ({title: ele.title, href: ele.href, img: ''}));
+    // });
+    const news = [...news_one, ...news_two].map(n => {
+      return [n.title, n.href, n.img]
+    })
+    
+    db.query('DELETE FROM news', '', (result) => {
+      const query = 'INSERT INTO news (title, href, img) VALUES ?'
+      db.query(query, [news], (result) => {
+        console.log('查询了一次新闻，当前时间：', new Date());
+      });
+    })
+  }
+  await recursiveCallCreatePage();
+  // 其他测试逻辑
+  await browser.close();
+}
+
 let job_weather = schedule.scheduleJob('*/30 * * * *', () => {
   // 获取股票信息，每半小时执行一次
   // console.log('获取一次天气');

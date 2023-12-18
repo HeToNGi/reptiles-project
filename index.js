@@ -609,32 +609,32 @@ let job_stockPrice = schedule.scheduleJob('*/30 * * * *', () => {
   // console.log('获取一次股票信息')
   obtainStockPrice();
 });
-async function job() {
-  await getMicroSoftStoreSild('movies');
-  await getMicroSoftStoreSild('home');
-  await getMicroSoftStoreSild('apps');
-  await getMicroSoftStoreSild('games', 'gaming');
-  await getStoreCollectionsList('https://apps.microsoft.com/collections/computed/games/TopGrossing?hl=zh-cn&gl=US', 'top_grossing_game', 'store_games');
-  await getWeeklyDeal(); 
-  await getStoreGames('https://apps.microsoft.com/collections/MerchandiserContent/Games/Primary/NewAndNotablePCGames/_NewAndNotablePCGames?hl=zh-cn&gl=US&hasHeroImage=true', 'new_notavlepc')
-  await getStoreApps('https://apps.microsoft.com/collections/MerchandiserContent/Apps/Primary/BestProductivityApps/_BestProductivityApps?hl=zh-cn&gl=US&hasHeroImage=true', 'productivity')
-  await getStoreApps('https://apps.microsoft.com/collections/MerchandiserContent/Apps/Primary/EssentialApps/_EssentialApps?hl=zh-cn&gl=US&hasHeroImage=true', 'essential')
-  await getStoreApps('https://apps.microsoft.com/collections/MerchandiserContent/Apps/Primary/ExploreAWorldOfMusic/_ExploreAWorldOfMusic?hl=zh-cn&gl=US&hasHeroImage=true', 'musice_streaming')
-  await getStoreApps('https://apps.microsoft.com/collections/MerchandiserContent/Apps/Primary/BestCreativityApps/_BestCreativityApps?hl=zh-cn&gl=US&hasHeroImage=true', 'creativity')
-  await getCreativityDesc();
-  await getStoreCollectionsList('https://apps.microsoft.com/collections/movies/video.newreleases.movies?hl=zh-cn&gl=US', 'new_movies', 'store_movies')
-  await getStoreCollectionsList('https://apps.microsoft.com/collections/movies/video.topselling.movies?hl=zh-cn&gl=US', 'top_selling', 'store_movies')
-  await getStoreCollectionsList('https://apps.microsoft.com/collections/movies/video.topselling.tv?hl=zh-cn&gl=US', 'top_selling_tv', 'store_movies')
-  await getStoreMovies('https://apps.microsoft.com/collections/movies/video.collections.fh_4kuhdmovies_actionadventure?hl=zh-cn&gl=US', 'action_adventure');
-  await getStoreMovies('https://apps.microsoft.com/collections/movies/video.collections.fh_4kuhdmovies_family?hl=zh-cn&gl=US', 'kids_family');
-  await getStoreMovies('https://apps.microsoft.com/collections/movies/video.collections.fh_4kuhdmovies_drama?hl=zh-cn&gl=US', 'drama');
-  await getStoreMovies('https://apps.microsoft.com/collections/movies/video.collections.fh_4kuhdmovies_comedy?hl=zh-cn&gl=US', 'comedy');
-}
+// async function job() {
+//   await getMicroSoftStoreSild('movies');
+//   await getMicroSoftStoreSild('home');
+//   await getMicroSoftStoreSild('apps');
+//   await getMicroSoftStoreSild('games', 'gaming');
+//   await getStoreCollectionsList('https://apps.microsoft.com/collections/computed/games/TopGrossing?hl=zh-cn&gl=US', 'top_grossing_game', 'store_games');
+//   await getWeeklyDeal(); 
+//   await getStoreGames('https://apps.microsoft.com/collections/MerchandiserContent/Games/Primary/NewAndNotablePCGames/_NewAndNotablePCGames?hl=zh-cn&gl=US&hasHeroImage=true', 'new_notavlepc')
+//   await getStoreApps('https://apps.microsoft.com/collections/MerchandiserContent/Apps/Primary/BestProductivityApps/_BestProductivityApps?hl=zh-cn&gl=US&hasHeroImage=true', 'productivity')
+//   await getStoreApps('https://apps.microsoft.com/collections/MerchandiserContent/Apps/Primary/EssentialApps/_EssentialApps?hl=zh-cn&gl=US&hasHeroImage=true', 'essential')
+//   await getStoreApps('https://apps.microsoft.com/collections/MerchandiserContent/Apps/Primary/ExploreAWorldOfMusic/_ExploreAWorldOfMusic?hl=zh-cn&gl=US&hasHeroImage=true', 'musice_streaming')
+//   await getStoreApps('https://apps.microsoft.com/collections/MerchandiserContent/Apps/Primary/BestCreativityApps/_BestCreativityApps?hl=zh-cn&gl=US&hasHeroImage=true', 'creativity')
+//   await getCreativityDesc();
+//   await getStoreCollectionsList('https://apps.microsoft.com/collections/movies/video.newreleases.movies?hl=zh-cn&gl=US', 'new_movies', 'store_movies')
+//   await getStoreCollectionsList('https://apps.microsoft.com/collections/movies/video.topselling.movies?hl=zh-cn&gl=US', 'top_selling', 'store_movies')
+//   await getStoreCollectionsList('https://apps.microsoft.com/collections/movies/video.topselling.tv?hl=zh-cn&gl=US', 'top_selling_tv', 'store_movies')
+//   await getStoreMovies('https://apps.microsoft.com/collections/movies/video.collections.fh_4kuhdmovies_actionadventure?hl=zh-cn&gl=US', 'action_adventure');
+//   await getStoreMovies('https://apps.microsoft.com/collections/movies/video.collections.fh_4kuhdmovies_family?hl=zh-cn&gl=US', 'kids_family');
+//   await getStoreMovies('https://apps.microsoft.com/collections/movies/video.collections.fh_4kuhdmovies_drama?hl=zh-cn&gl=US', 'drama');
+//   await getStoreMovies('https://apps.microsoft.com/collections/movies/video.collections.fh_4kuhdmovies_comedy?hl=zh-cn&gl=US', 'comedy');
+// }
 
-const rule = new schedule.RecurrenceRule();
-rule.dayOfWeek = 0; // 0 表示星期日
-rule.hour = 0; // 设置小时
-rule.minute = 0; // 设置分钟
+// const rule = new schedule.RecurrenceRule();
+// rule.dayOfWeek = 0; // 0 表示星期日
+// rule.hour = 0; // 设置小时
+// rule.minute = 0; // 设置分钟
 
-const jobSchedule = schedule.scheduleJob(rule, job);
+// const jobSchedule = schedule.scheduleJob(rule, job);
 
